@@ -7,3 +7,16 @@
   color: #FFFFFF;
   margin: 0;
 }
+
+@media screen and (max-width: 880px) {
+  .intro__username {
+    font-size: 27px;
+    line-height: 33px;
+  }
+}
+
+@media screen and (max-width: 750px) {
+  .intro__username {
+    margin-top: 20px;
+  }
+}

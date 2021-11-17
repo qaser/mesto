@@ -7,4 +7,12 @@
   background-image: url(../../../images/Plus.svg);
   background-repeat: no-repeat;
   background-position: center;
+  padding: 0;
+}
+
+@media screen and (max-width: 750px) {
+  .profile__button {
+    margin-top: 36px;
+    width: 100%;
+  }
 }

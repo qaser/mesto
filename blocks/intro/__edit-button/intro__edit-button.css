@@ -7,3 +7,9 @@
   margin-left: 18px;
   margin-top: 7px;
 }
+
+@media screen and (max-width: 750px) {
+  .intro__edit-button {
+    margin-top: 27px;
+  }
+}
