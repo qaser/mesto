@@ -5,13 +5,14 @@
   line-height: 21.78px;
   text-align: left;
   color: #FFFFFF;
-  margin: 16px 0 0 0;
+  margin: 8px 0 0 0;
 }
 
-@media screen and (max-width: 880px) {
+@media screen and (max-width: 750px) {
   .profile__occupation {
     font-size: 14px;
     line-height: 17px;
-    margin-top: 14px;
+    margin-top: 10px;
+    text-align: center;
   }
 }

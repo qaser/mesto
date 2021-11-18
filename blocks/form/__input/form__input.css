@@ -1,5 +1,5 @@
 .form__input {
-  width: 100%;
+  width: 358px;
   height: 36px;
   margin: 36px 0 20px 0;
   border: none;
@@ -14,8 +14,9 @@
   margin: 0;
 }
 
-@media screen and (max-width: 550px) {
+@media screen and (max-width: 600px) {
   .form__input {
     margin-top: 65px;
+    width: 238px;
   }
 }

@@ -1,22 +1,16 @@
 .intro__username {
   font-size: 42px;
-  font-style: normal;
-  font-weight: 400;
+  font-weight: 500;
   line-height: 48px;
   text-align: left;
   color: #FFFFFF;
   margin: 0;
 }
 
-@media screen and (max-width: 880px) {
+@media screen and (max-width: 750px) {
   .intro__username {
     font-size: 27px;
     line-height: 33px;
-  }
-}
-
-@media screen and (max-width: 750px) {
-  .intro__username {
-    margin-top: 20px;
+    margin-top: 27px;
   }
 }

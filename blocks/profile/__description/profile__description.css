@@ -1,3 +1,9 @@
 .profile__description {
-  margin-left: 24px;
+  margin-left: 30px;
+}
+
+@media screen and (max-width: 750px) {
+  .profile__description {
+    margin-left: 0;
+  }
 }
