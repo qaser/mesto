@@ -5,6 +5,7 @@
   line-height: 29px;
   color: black;
   margin: 0;
+  width: 90%;
   /* переполнение текста */
   text-overflow: ellipsis;
   white-space: nowrap;

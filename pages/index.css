@@ -13,6 +13,7 @@
 
 @import url(../blocks/button/button.css);
 @import url(../blocks/button/_low-transparent/button_low-transparent.css);
+@import url(../blocks/button/_high-transparent/button_high-transparent.css);
 
 @import url(../blocks/form/form.css);
 @import url(../blocks/form/__header/form__header.css);
@@ -32,7 +33,7 @@
 @import url(../blocks/profile/__button/profile__button.css);
 
 @import url(../blocks/intro/intro.css);
-@import url(../blocks/intro/__username/intro__username.css);
+@import url(../blocks/intro/__user-name/intro__user-name.css);
 @import url(../blocks/intro/__edit-button/intro__edit-button.css);
 
 @import url(../blocks/places/places.css);

@@ -4,8 +4,8 @@
   align-items: center;
 }
 
-@media screen and (max-width: 650px) {
+@media screen and (max-width: 750px) {
   .profile__user {
-    justify-content: center;
+    flex-direction: column;
   }
 }

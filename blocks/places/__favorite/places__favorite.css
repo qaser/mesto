@@ -1,1 +1,9 @@
-/* пока не используется */
+.places__favorite {
+  background-image: url(../../../images/Vector.svg);
+  width: 22px;
+  height: 19px;
+  background-position: center;
+  background-size: contain;
+  background-color: white;
+  border: none;
+}

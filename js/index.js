@@ -1,28 +1,45 @@
-let openPopup = document.querySelector('.intro__edit-button');
-let closePopup = document.querySelector('.popup__button-close');
+// кнопка открытия формы для редактирования данных пользователя
+let buttonOpenPopup = document.querySelector('.intro__edit-button');
+// кнопка закрытия формы для редактирования данных пользователя
+let buttonClosePopup = document.querySelector('.popup__button-close');
+// форма - для отправки данных, введенных пользователем
 let formElement = document.querySelector('.form')
-let inputForm = document.querySelectorAll('.form__input');
-let userName = document.querySelector('.intro__username');
+// имя пользователя
+let userName = document.querySelector('.intro__user-name');
+// род занятий пользователя
 let userOccupation = document.querySelector('.profile__occupation');
+// всплывающее окно
+let popupToggle = document.querySelector('.popup');
+// инпут для имени пользователя (доступ по id)
+let inputNameForm = document.querySelector('#user-name');
+// инпут для профессии пользователя (доступ по id)
+let inputOccupationForm = document.querySelector('#user-occupation');
 
+// функция вставки текущих данных пользователя в форму
 function userDataForm() {
-  inputForm[0].value = userName.textContent;
-  inputForm[1].value = userOccupation.textContent;
+  inputNameForm.value = userName.textContent;
+  inputOccupationForm.value = userOccupation.textContent;
 }
 
-function openClosePopup() {
+// функция открытия попапа-формы
+function openPopup() {
   userDataForm();
-  let popupToggle = document.querySelector('.popup');
   popupToggle.classList.toggle('popup_opened');
 }
 
-function formSubmitHandler(evt) {
-  evt.preventDefault();
-  userName.textContent = inputForm[0].value;
-  userOccupation.textContent = inputForm[1].value;
-  openClosePopup();
+// функция открытия попапа-формы
+function closePopup() {
+  popupToggle.classList.toggle('popup_opened');
 }
 
-openPopup.addEventListener('click', openClosePopup);
-closePopup.addEventListener('click', openClosePopup);
+// функция отправки данных, введенных в форму
+function formSubmitHandler(evt) {
+  evt.preventDefault();
+  userName.textContent = inputNameForm.value;
+  userOccupation.textContent = inputOccupationForm.value;
+  closePopup();
+}
+
+buttonOpenPopup.addEventListener('click', openPopup);
+buttonClosePopup.addEventListener('click', closePopup);
 formElement.addEventListener('submit', formSubmitHandler);

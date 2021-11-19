@@ -1,15 +1,13 @@
 .popup__container {
-  margin-top: 152px;
-  margin-left: calc((100vw - 470px)/2 + 22px);
+  margin-top: calc((100vh - 370px)/2);
+  margin-left: calc((100vw - 470px)/2 + 20px);
   width: 470px;
-  height: 370px;
 }
 
 @media screen and (max-width: 600px) {
   .popup__container {
-    margin-top: 85px;
-    margin-left: calc(100vw /2 - 282px / 2);
+    margin-top: calc((100vh - 358px)/2);
+    margin-left: calc((100vw - 282px)/2);
     width: 282px;
-    height: 358px;
   }
 }
