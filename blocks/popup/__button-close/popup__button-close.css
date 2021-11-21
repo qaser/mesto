@@ -1,5 +1,10 @@
 .popup__button-close {
-  margin-left: 438px;
+  /* переделал через абсолютное позиционирование
+  кнопки относительно контейнера. Изначально форма и кнопка были в контейнере,
+  но так контейнер не центрируется вертикально свойствами флекс */
+  position: absolute;
+  top: -40px;
+  right: -40px;
   background-image: url(../../../images/Close-Icon.svg);
   background-color: black;
   background-position: center;
@@ -11,7 +16,8 @@
 
 @media screen and (max-width: 600px) {
   .popup__button-close {
-    margin-left: 262px;
+    top: -20px;
+    right: 0;
     width: 20px;
     height: 20px;
   }
