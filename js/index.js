@@ -1,3 +1,5 @@
+import {initialCards} from './fixture.js';
+
 // данные пользователя
 const userName = document.querySelector('.intro__user-name');
 const userOccupation = document.querySelector('.profile__occupation');
@@ -24,48 +26,25 @@ const btnProfileEdit = document.querySelector('.intro__edit-button');
 const btnAddPlace = document.querySelector('.profile__button');
 const btnsClosePopup = document.querySelectorAll('.popup__button-close');
 
-const initialCards = [
-  {
-    name: 'Архыз',
-    link: 'https://pictures.s3.yandex.net/frontend-developer/cards-compressed/arkhyz.jpg'
-  },
-  {
-    name: 'Челябинская область',
-    link: 'https://pictures.s3.yandex.net/frontend-developer/cards-compressed/chelyabinsk-oblast.jpg'
-  },
-  {
-    name: 'Иваново',
-    link: 'https://pictures.s3.yandex.net/frontend-developer/cards-compressed/ivanovo.jpg'
-  },
-  {
-    name: 'Камчатка',
-    link: 'https://pictures.s3.yandex.net/frontend-developer/cards-compressed/kamchatka.jpg'
-  },
-  {
-    name: 'Холмогорский район',
-    link: 'https://pictures.s3.yandex.net/frontend-developer/cards-compressed/kholmogorsky-rayon.jpg'
-  },
-  {
-    name: 'Байкал',
-    link: 'https://pictures.s3.yandex.net/frontend-developer/cards-compressed/baikal.jpg'
-  }
-];
+
 // генерация элементов из массива в карточки мест
 initialCards.forEach(function (item) {
-  placesList.append(addPlace(item));
+  placesList.append(createCard(item));
 });
 
 
 // функция создания новой карточки места и диспетчера событий
-function addPlace(item) {
+function createCard(item) {
   const newPlace = placesTemplate.cloneNode(true);
-  newPlace.querySelector('.places__image').src = item.link;
-  newPlace.querySelector('.places__image').alt = item.name;
+  const placeImage = newPlace.querySelector('.places__image')
+  placeImage.src = item.link;
+  placeImage.alt = item.name;
   newPlace.querySelector('.places__name').textContent = item.name;
   // создаю диспетчеры событий
   newPlace.querySelector('.places__item').addEventListener('click', function (evt) {
     fillImageData(item);
     openPopup(popupImage);
+    popupImage.classList.add('popup_darker');
   });
   newPlace.querySelector('.places__basket').addEventListener('click', function (evt) {
     evt.target.parentNode.remove();
@@ -86,8 +65,9 @@ function fillUserData() {
 }
 
 function fillImageData(item) {
-  popupImage.querySelector('.popup__image').src = item.link;
-  popupImage.querySelector('.popup__image').alt = item.name;
+  const image = popupImage.querySelector('.popup__image')
+  image.src = item.link;
+  image.alt = item.name;
   popupImage.querySelector('.popup__image-title').textContent = item.name;
 }
 
@@ -95,16 +75,6 @@ function fillImageData(item) {
 // функция открытия попапа
 function openPopup(popup) {
   popup.classList.add('popup_opened');
-  if (popup.id === 'popup-profile') {
-    fillUserData();
-  }
-  if (popup.id == 'popup-image') {
-    popupImage.classList.add('popup_darker');
-  }
-  if (popup.id === 'popup-place') {
-    inputPlaceForm.value = '';
-    inputLinkForm.value = '';
-  }
 }
 
 
@@ -117,7 +87,7 @@ function closePopup() {
 
 
 // функция отправки данных, введенных в форму
-function formSubmitProfile(evt) {
+function submitFormProfile(evt) {
   evt.preventDefault();
   userName.textContent = inputNameForm.value;
   userOccupation.textContent = inputOccupationForm.value;
@@ -126,25 +96,28 @@ function formSubmitProfile(evt) {
 
 
 // функция формирования данных из формы для новой карточки места
-function formNewPlace(evt) {
+function submitFormPlace(evt) {
   evt.preventDefault();
   const newItem = {
     name: inputPlaceForm.value,
     link: inputLinkForm.value
   };
-  placesList.append(addPlace(newItem));
+  placesList.insertBefore(createCard(newItem), placesList.firstChild);
   closePopup();
 }
 
 
 // диспетчеры событий
-formPlace.addEventListener('submit', formNewPlace);
-formProfile.addEventListener('submit', formSubmitProfile);
+formPlace.addEventListener('submit', submitFormPlace);
+formProfile.addEventListener('submit', submitFormProfile);
 btnProfileEdit.addEventListener('click', function () {
   openPopup(popupProfile);
+  fillUserData();
 });
 btnAddPlace.addEventListener('click', function () {
   openPopup(popupPlace);
+  inputPlaceForm.value = '';
+  inputLinkForm.value = '';
 });
 // обработчики для кнопок закрытия
 btnsClosePopup.forEach( function (btn) {
