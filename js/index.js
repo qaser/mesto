@@ -1,6 +1,6 @@
 // данные пользователя
-let userName = document.querySelector('.intro__user-name');
-let userOccupation = document.querySelector('.profile__occupation');
+const userName = document.querySelector('.intro__user-name');
+const userOccupation = document.querySelector('.profile__occupation');
 
 // всплывающие окна
 const popupProfile = document.querySelector('#popup-profile');
@@ -12,8 +12,8 @@ const placesList = document.querySelector('.places__items');
 const placesTemplate = document.querySelector('.places__item-template').content;
 
 // формы для отправки данных, введенных пользователем
-const formPlace = document.querySelector('#form-place')
-const formProfile = document.querySelector('#form-profile')
+const formPlace = document.querySelector('#form-place');
+const formProfile = document.querySelector('#form-profile');
 const inputNameForm = document.querySelector('#user-name');
 const inputOccupationForm = document.querySelector('#user-occupation');
 const inputPlaceForm = document.querySelector('#place-name');
@@ -52,8 +52,8 @@ const initialCards = [
 ];
 // генерация элементов из массива в карточки мест
 initialCards.forEach(function (item) {
-  placesList.append(addPlace(item))
-})
+  placesList.append(addPlace(item));
+});
 
 
 // функция создания новой карточки места и диспетчера событий
@@ -75,7 +75,7 @@ function addPlace(item) {
     evt.target.classList.toggle('places__favorite_active');
     evt.stopPropagation(); // запрещает подниматься клику до родителя
   });
-  return newPlace
+  return newPlace;
 }
 
 
@@ -128,10 +128,10 @@ function formSubmitProfile(evt) {
 // функция формирования данных из формы для новой карточки места
 function formNewPlace(evt) {
   evt.preventDefault();
-  newItem = {
+  const newItem = {
     name: inputPlaceForm.value,
     link: inputLinkForm.value
-  }
+  };
   placesList.append(addPlace(newItem));
   closePopup();
 }
@@ -141,12 +141,12 @@ function formNewPlace(evt) {
 formPlace.addEventListener('submit', formNewPlace);
 formProfile.addEventListener('submit', formSubmitProfile);
 btnProfileEdit.addEventListener('click', function () {
-  openPopup(popupProfile)
+  openPopup(popupProfile);
 });
 btnAddPlace.addEventListener('click', function () {
-  openPopup(popupPlace)
+  openPopup(popupPlace);
 });
 // обработчики для кнопок закрытия
 btnsClosePopup.forEach( function (btn) {
   btn.addEventListener('click', closePopup);
-})
+});
