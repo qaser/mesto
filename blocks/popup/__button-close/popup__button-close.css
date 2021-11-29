@@ -1,12 +1,9 @@
 .popup__button-close {
-  /* переделал через абсолютное позиционирование
-  кнопки относительно контейнера. Изначально форма и кнопка были в контейнере,
-  но так контейнер не центрируется вертикально свойствами флекс */
   position: absolute;
   top: -40px;
   right: -40px;
   background-image: url(../../../images/Close-Icon.svg);
-  background-color: black;
+  background-color: rgba(0, 0, 0, 0);  /* для прозрачного фона */
   background-position: center;
   background-size: contain;
   border: none;

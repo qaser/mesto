@@ -14,18 +14,6 @@
   <body>
     <div class="page">
 
-      <div class="popup">
-        <div class="popup__container">
-          <button class="button popup__button-close" type="button"></button>
-          <form class="form" name="edit-user">
-            <h2 class="form__header">Редактировать профиль</h2>
-            <input class="form__input" id="user-name" type="text" name="name" value="">
-            <input class="form__input" id="user-occupation" type="text" name="occupation" value="">
-            <button class="button button_low-transparent form__button" type="submit">Сохранить</button>
-          </form>
-        </div>
-      </div>
-
       <header class="header">
         <img class="header__logo" src="./images/logo.svg" alt="Логотип Mesto">
       </header>
@@ -48,48 +36,7 @@
 
         <section class="places">
           <ul class="list places__items">
-            <li class="places__item">
-              <img class="places__image" src="./images/michel-grolet-bpoe9uWciPU-unsplash(1).jpg" alt="Гасконь">
-              <div class="places__footer">
-                <h3 class="places__name">Карачаевск</h3>
-                <button class="button button_high-transparent places__favorite" type="submit"></button>
-              </div>
-            </li>
-            <li class="places__item">
-              <img class="places__image" src="./images/austin-loveing-h7l9K6eBMTM-unsplash.jpg" alt="Фезансак">
-              <div class="places__footer">
-                <h3 class="places__name">Гора Эльбрус</h3>
-                <button class="button button_high-transparent places__favorite" type="submit"></button>
-              </div>
-            </li>
-            <li class="places__item">
-              <img class="places__image" src="./images/leonard-cotte-c1Jp-fo53U8-unsplash.jpg" alt="Арманьяк">
-              <div class="places__footer">
-                <h3 class="places__name">Арманьяк</h3>
-                <button class="button button_high-transparent places__favorite" type="submit"></button>
-              </div>
-            </li>
-            <li class="places__item">
-              <img class="places__image" src="./images/anthony-choren-9butA5ecM3U-unsplash.jpg" alt="Ля Рошель">
-              <div class="places__footer">
-                <h3 class="places__name">Крепость Ля Рошель</h3>
-                <button class="button button_high-transparent places__favorite" type="submit"></button>
-              </div>
-            </li>
-            <li class="places__item">
-              <img class="places__image" src="./images/chris-karidis-nnzkZNYWHaU-unsplash.jpg" alt="Париж">
-              <div class="places__footer">
-                <h3 class="places__name">Париж</h3>
-                <button class="button places__favorite" type="submit"></button>
-              </div>
-            </li>
-            <li class="places__item">
-              <img class="places__image" src="./images/marcel-strauss-t9yW6tegIRU-unsplash.jpg" alt="Собор Парижской Богоматери">
-              <div class="places__footer">
-                <h3 class="places__name">Собор Парижской Богоматери</h3>
-                <button class="button button_high-transparent places__favorite" type="submit"></button>
-              </div>
-            </li>
+            <!-- здесь карточки-элементы из тега template -->
           </ul>
         </section>
       </main>
@@ -98,7 +45,55 @@
         <p class="footer__copyright">&copy; 2021 Mesto Russia</p>
       </footer>
 
+      <!-- всплывающее окно с формой редактирования пользователя -->
+      <div class="popup" id="popup-profile">
+        <div class="popup__container">
+          <button class="button popup__button-close" type="button"></button>
+          <form class="form" name="edit-user" id="form-profile">
+            <h2 class="form__header">Редактировать профиль</h2>
+            <input class="form__input" id="user-name" type="text" name="name" value="" placeholder="Имя пользователя">
+            <input class="form__input" id="user-occupation" type="text" name="occupation" value="" placeholder="Жизненное кредо">
+            <button class="button button_low-transparent form__button" type="submit">Сохранить</button>
+          </form>
+        </div>
+      </div>
+
+      <!-- всплывающее окно с формой добавления фото -->
+      <div class="popup" id="popup-place">
+        <div class="popup__container">
+          <button class="button popup__button-close" type="button"></button>
+          <form class="form" name="add-place" id="form-place">
+            <h2 class="form__header">Новое место</h2>
+            <input class="form__input" id="place-name" type="text" name="place" value="" placeholder="Название">
+            <input class="form__input" id="place-link" type="text" name="link" value="" placeholder="Ссылка на картинку">
+            <button class="button button_low-transparent form__button" type="submit">Создать</button>
+          </form>
+        </div>
+      </div>
+
+      <!-- всплывающее окно с формой добавления фото -->
+      <div class="popup" id="popup-image">
+        <div class="popup__container">
+          <button class="button popup__button-close" type="button"></button>
+          <img class="popup__image" src="#" alt="#">
+          <p class="popup__image-title"></p>
+        </div>
+      </div>
+
     </div>
+
+    <!-- шаблон карточки мест -->
+    <template class="places__item-template">
+      <li class="places__item" id="">
+        <button class="button button_high-transparent places__basket" type="button"></button>
+        <img class="places__image" src="" alt="">
+        <div class="places__footer">
+          <h3 class="places__name"></h3>
+          <button class="button button_high-transparent places__favorite" type="button"></button>
+        </div>
+      </li>
+    </template>
+    <!-- конец карточки мест -->
 
     <script src="./js/index.js"></script>
 

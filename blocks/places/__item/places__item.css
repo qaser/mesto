@@ -2,4 +2,9 @@
   width: 282px;
   border-radius: 10px;
   background-color: white;
+  position: relative;
+}
+
+.places__item:hover {
+  cursor: pointer;
 }
