@@ -98,9 +98,14 @@ function submitFormProfile(evt) {
 // функция формирования данных из формы для новой карточки места
 function submitFormPlace(evt) {
   evt.preventDefault();
+  let imageLink = inputLinkForm.value;
+  // обработка отправки пустой формы
+  if (imageLink === '') {
+    imageLink = '../images/error.jpg';
+  };
   const newItem = {
     name: inputPlaceForm.value,
-    link: inputLinkForm.value
+    link: imageLink
   };
   placesList.insertBefore(createCard(newItem), placesList.firstChild);
   closePopup(popupPlace);
