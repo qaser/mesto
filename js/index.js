@@ -47,7 +47,7 @@ function createCard(item) {
     popupImage.classList.add('popup_darker');
   });
   newPlace.querySelector('.places__basket').addEventListener('click', function (evt) {
-    evt.target.parentNode.remove();
+    evt.target.closest('.places__item').remove();
     evt.stopPropagation(); // запрещает подниматься клику до родителя
   });
   newPlace.querySelector('.places__favorite').addEventListener('click', function (evt) {
@@ -64,6 +64,8 @@ function fillUserData() {
   inputOccupationForm.value = userOccupation.textContent;
 }
 
+
+// функция заполнения аттрибутов картинки в тег <img>
 function fillImageData(item) {
   const image = popupImage.querySelector('.popup__image')
   image.src = item.link;
@@ -78,11 +80,9 @@ function openPopup(popup) {
 }
 
 
-// функция закрытия попапа-формы
-function closePopup() {
-  popupProfile.classList.remove('popup_opened');
-  popupPlace.classList.remove('popup_opened');
-  popupImage.classList.remove('popup_opened');
+// функция закрытия попапа
+function closePopup(popup) {
+  popup.classList.remove('popup_opened');
 }
 
 
@@ -91,7 +91,7 @@ function submitFormProfile(evt) {
   evt.preventDefault();
   userName.textContent = inputNameForm.value;
   userOccupation.textContent = inputOccupationForm.value;
-  closePopup();
+  closePopup(popupProfile);
 }
 
 
@@ -103,7 +103,7 @@ function submitFormPlace(evt) {
     link: inputLinkForm.value
   };
   placesList.insertBefore(createCard(newItem), placesList.firstChild);
-  closePopup();
+  closePopup(popupPlace);
 }
 
 
@@ -121,5 +121,8 @@ btnAddPlace.addEventListener('click', function () {
 });
 // обработчики для кнопок закрытия
 btnsClosePopup.forEach( function (btn) {
-  btn.addEventListener('click', closePopup);
+  const popup = btn.closest('.popup')
+  btn.addEventListener('click', function () {
+    closePopup(popup)
+  });
 });
