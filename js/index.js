@@ -1,3 +1,4 @@
+"use strict";
 import {initialCards} from './fixture.js';
 
 // данные пользователя
@@ -28,7 +29,7 @@ const btnsClosePopup = document.querySelectorAll('.popup__button-close');
 
 
 // генерация элементов из массива в карточки мест
-initialCards.forEach(function (item) {
+initialCards.forEach((item) => {
   placesList.append(createCard(item));
 });
 
@@ -115,19 +116,19 @@ function submitFormPlace(evt) {
 // диспетчеры событий
 formPlace.addEventListener('submit', submitFormPlace);
 formProfile.addEventListener('submit', submitFormProfile);
-btnProfileEdit.addEventListener('click', function () {
+btnProfileEdit.addEventListener('click', () => {
   openPopup(popupProfile);
   fillUserData();
 });
-btnAddPlace.addEventListener('click', function () {
+btnAddPlace.addEventListener('click', () => {
   openPopup(popupPlace);
   inputPlaceForm.value = '';
   inputLinkForm.value = '';
 });
 // обработчики для кнопок закрытия
-btnsClosePopup.forEach( function (btn) {
+btnsClosePopup.forEach((btn) => {
   const popup = btn.closest('.popup')
-  btn.addEventListener('click', function () {
+  btn.addEventListener('click', () => {
     closePopup(popup)
   });
 });
