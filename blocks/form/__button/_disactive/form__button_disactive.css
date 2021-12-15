@@ -1,0 +1,6 @@
+.form__button_disactive {
+  /* color: black; */
+  background-color: white;
+  pointer-events: none;
+  user-select: none;
+}

@@ -78,6 +78,18 @@ function fillImageData(item) {
 // функция открытия попапа
 function openPopup(popup) {
   popup.classList.add('popup_opened');
+  // обработка кнопки Escape
+  document.addEventListener('keydown', evt => {
+    if (evt.key === 'Escape') {
+      closePopup(popup);
+    }
+  })
+  // обработка нажатия вне попапа
+  popup.addEventListener('click', evt => {
+    if (evt.target === popup) {
+      closePopup(popup);
+    }
+  })
 }
 
 
@@ -127,8 +139,8 @@ btnAddPlace.addEventListener('click', () => {
 });
 // обработчики для кнопок закрытия
 btnsClosePopup.forEach((btn) => {
-  const popup = btn.closest('.popup')
+  const popup = btn.closest('.popup');
   btn.addEventListener('click', () => {
-    closePopup(popup)
+    closePopup(popup);
   });
 });
