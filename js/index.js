@@ -1,4 +1,3 @@
-"use strict";
 import {initialCards} from './fixture.js';
 
 // данные пользователя
@@ -78,18 +77,6 @@ function fillImageData(item) {
 // функция открытия попапа
 function openPopup(popup) {
   popup.classList.add('popup_opened');
-  // обработка кнопки Escape
-  document.addEventListener('keydown', evt => {
-    if (evt.key === 'Escape') {
-      closePopup(popup);
-    }
-  })
-  // обработка нажатия вне попапа
-  popup.addEventListener('click', evt => {
-    if (evt.target === popup) {
-      closePopup(popup);
-    }
-  })
 }
 
 
@@ -143,4 +130,16 @@ btnsClosePopup.forEach((btn) => {
   btn.addEventListener('click', () => {
     closePopup(popup);
   });
+  // обработка кнопки Escape
+  document.addEventListener('keydown', evt => {
+    if (evt.key === 'Escape') {
+      closePopup(popup);
+    }
+  })
+  // обработка нажатия вне попапа
+  popup.addEventListener('click', evt => {
+    if (evt.target === popup) {
+      closePopup(popup);
+    }
+  })
 });
