@@ -25,7 +25,12 @@ const inputLinkForm = document.querySelector('#place-link');
 const btnProfileEdit = document.querySelector('.intro__edit-button');
 const btnAddPlace = document.querySelector('.profile__button');
 const btnsClosePopup = document.querySelectorAll('.popup__button-close');
+const btnSubmitProfile = formProfile.querySelector('.form__button');
+const btnSubmitPlace = formPlace.querySelector('.form__button');
 
+// атрибуты картинки
+const image = popupImage.querySelector('.popup__image');
+const imageTitle = popupImage.querySelector('.popup__image-title');
 
 // генерация элементов из массива в карточки мест
 initialCards.forEach((item) => {
@@ -41,16 +46,16 @@ function createCard(item) {
   placeImage.alt = item.name;
   newPlace.querySelector('.places__name').textContent = item.name;
   // создаю диспетчеры событий
-  newPlace.querySelector('.places__item').addEventListener('click', function (evt) {
+  newPlace.querySelector('.places__item').addEventListener('click', (evt) => {
     fillImageData(item);
     openPopup(popupImage);
     popupImage.classList.add('popup_darker');
   });
-  newPlace.querySelector('.places__basket').addEventListener('click', function (evt) {
+  newPlace.querySelector('.places__basket').addEventListener('click', (evt) => {
     evt.target.closest('.places__item').remove();
     evt.stopPropagation(); // запрещает подниматься клику до родителя
   });
-  newPlace.querySelector('.places__favorite').addEventListener('click', function (evt) {
+  newPlace.querySelector('.places__favorite').addEventListener('click', (evt) => {
     evt.target.classList.toggle('places__favorite_active');
     evt.stopPropagation(); // запрещает подниматься клику до родителя
   });
@@ -67,28 +72,56 @@ function fillUserData() {
 
 // функция заполнения аттрибутов картинки в тег <img>
 function fillImageData(item) {
-  const image = popupImage.querySelector('.popup__image')
   image.src = item.link;
   image.alt = item.name;
-  popupImage.querySelector('.popup__image-title').textContent = item.name;
+  imageTitle.textContent = item.name;
 }
 
 
 // функция открытия попапа
 function openPopup(popup) {
   popup.classList.add('popup_opened');
+  // слушатель кнопки Escape
+  document.addEventListener('keydown', (evt) => {
+    closeByEscape(evt, popup);
+  })
+  // слушатель нажатия вне попапа
+  popup.addEventListener('click', (evt) => {
+    closeByOverlay(evt, popup);
+  })
 }
+
+
+// закрытие попапа по нажатию кнопки Escape
+function closeByEscape(evt, popup) {
+  if (evt.key === 'Escape') {
+    closePopup(popup);
+  };
+};
+
+
+// закрытие попапа по нажатию вне попапа
+function closeByOverlay(evt, popup) {
+  if (evt.target === popup) {
+    closePopup(popup);
+  };
+};
 
 
 // функция закрытия попапа
 function closePopup(popup) {
   popup.classList.remove('popup_opened');
+  document.removeEventListener('keydown', (evt) => {
+    closeByEscape(evt, popup);
+  })
+  popup.removeEventListener('click', (evt) => {
+    closeByOverlay(evt, popup);
+  })
 }
 
 
 // функция отправки данных, введенных в форму
 function submitFormProfile(evt) {
-  evt.preventDefault();
   userName.textContent = inputNameForm.value;
   userOccupation.textContent = inputOccupationForm.value;
   closePopup(popupProfile);
@@ -97,18 +130,25 @@ function submitFormProfile(evt) {
 
 // функция формирования данных из формы для новой карточки места
 function submitFormPlace(evt) {
-  evt.preventDefault();
-  if (inputLinkForm.value === '' && inputPlaceForm.value === '') {
-    closePopup(popupPlace); // обработка отправки пустой формы
-  }
-  else {
-    const newItem = {
-      name: inputPlaceForm.value,
-      link: inputLinkForm.value
-    };
-    placesList.insertBefore(createCard(newItem), placesList.firstChild);
-    closePopup(popupPlace);
-  }
+  const newItem = {
+    name: inputPlaceForm.value,
+    link: inputLinkForm.value
+  };
+  placesList.prepend(createCard(newItem));
+  closePopup(popupPlace);
+}
+
+
+// сброс сообщений валидации и стиля полей
+function resetErrorsForm(form) {
+  const errorFields = Array.from(form.querySelectorAll('.form__input-error'));
+  const inputFields = Array.from(form.querySelectorAll('.form__input'));
+  errorFields.forEach((field) => {
+    field.textContent = '';
+  });
+  inputFields.forEach((field) => {
+    field.classList.remove('form__input_invalid');
+  })
 }
 
 
@@ -116,13 +156,18 @@ function submitFormPlace(evt) {
 formPlace.addEventListener('submit', submitFormPlace);
 formProfile.addEventListener('submit', submitFormProfile);
 btnProfileEdit.addEventListener('click', () => {
-  openPopup(popupProfile);
+  resetErrorsForm(formProfile);
   fillUserData();
+  btnSubmitProfile.disabled = false;
+  btnSubmitProfile.classList.remove('form__button_disactive');
+  openPopup(popupProfile);
 });
 btnAddPlace.addEventListener('click', () => {
+  formPlace.reset(); // очистка ранее введенных данных в инпутах
+  resetErrorsForm(formPlace);
+  btnSubmitPlace.disabled = true; // защита от введения пустых данных
+  btnSubmitPlace.classList.add('form__button_disactive');
   openPopup(popupPlace);
-  inputPlaceForm.value = '';
-  inputLinkForm.value = '';
 });
 // обработчики для кнопок закрытия
 btnsClosePopup.forEach((btn) => {
@@ -130,16 +175,4 @@ btnsClosePopup.forEach((btn) => {
   btn.addEventListener('click', () => {
     closePopup(popup);
   });
-  // обработка кнопки Escape
-  document.addEventListener('keydown', evt => {
-    if (evt.key === 'Escape') {
-      closePopup(popup);
-    }
-  })
-  // обработка нажатия вне попапа
-  popup.addEventListener('click', evt => {
-    if (evt.target === popup) {
-      closePopup(popup);
-    }
-  })
 });

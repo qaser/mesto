@@ -6,6 +6,7 @@ function showInputError(formElement, inputElement, errorMessage, dict) {
   errorElement.classList.add(dict.errorClass);
 }
 
+
 // функция для скрытия ошибки инпута формы
 function hideInputError(formElement, inputElement, dict) {
   const errorElement = formElement.querySelector(`#${inputElement.id}-error`);
@@ -13,6 +14,7 @@ function hideInputError(formElement, inputElement, dict) {
   errorElement.classList.remove(dict.errorClass);
   errorElement.textContent = '';
 }
+
 
 // функция проверки валидности поля формы
 function checkInputValidity(formElement, inputElement, dict) {
@@ -23,18 +25,20 @@ function checkInputValidity(formElement, inputElement, dict) {
   }
 }
 
+
 // функция установки слушателя на все инпуты формы
 function setEventListeners(formElement, dict) {
   const inputList = Array.from(formElement.querySelectorAll(dict.inputSelector));
   const buttonElement = formElement.querySelector(dict.submitButtonSelector);
   toggleButtonState(inputList, buttonElement, dict);
   inputList.forEach((inputElement) => {
-  inputElement.addEventListener('input', function () {
+  inputElement.addEventListener('input', () => {
     checkInputValidity(formElement, inputElement, dict);
     toggleButtonState(inputList, buttonElement, dict);
   });
 });
 }
+
 
 // функция проверки валидности всех инпутов
 function hasInvalidInput(inputList) {
@@ -43,21 +47,23 @@ function hasInvalidInput(inputList) {
   });
 }
 
+
 // функция переключения активности кнопки
 function toggleButtonState(inputList, buttonElement, dict) {
   if (hasInvalidInput(inputList)) {
     buttonElement.classList.add(dict.disactiveButtonClass);
+    buttonElement.disabled = true;
   }
   else {
     buttonElement.classList.remove(dict.disactiveButtonClass);
+    buttonElement.disabled = false;
   }
 }
 
+
 // функция установки слушателя на все формы страницы
 function enableValidation(dict) {
-  const formList = Array.from(
-    document.querySelectorAll(dict.formSelector)
-  );
+  const formList = Array.from(document.querySelectorAll(dict.formSelector));
   formList.forEach((formElement) => {
   formElement.addEventListener('submit', (evt) => {
     evt.preventDefault();
@@ -65,6 +71,7 @@ function enableValidation(dict) {
     setEventListeners(formElement, dict);
 });
 }
+
 
 enableValidation({
   formSelector: '.form',
