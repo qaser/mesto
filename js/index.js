@@ -32,6 +32,12 @@ const btnSubmitPlace = formPlace.querySelector('.form__button');
 const image = popupImage.querySelector('.popup__image');
 const imageTitle = popupImage.querySelector('.popup__image-title');
 
+// ошибки форм
+const errorFieldsPlace = Array.from(formPlace.querySelectorAll('.form__input-error'));
+const inputFieldsPlace = Array.from(formPlace.querySelectorAll('.form__input'));
+const errorFieldsProfile = Array.from(formProfile.querySelectorAll('.form__input-error'));
+const inputFieldsProfile = Array.from(formProfile.querySelectorAll('.form__input'));
+
 // генерация элементов из массива в карточки мест
 initialCards.forEach((item) => {
   placesList.append(createCard(item));
@@ -140,14 +146,12 @@ function submitFormPlace(evt) {
 
 
 // сброс сообщений валидации и стиля полей
-function resetErrorsForm(form) {
-  const errorFields = Array.from(form.querySelectorAll('.form__input-error'));
-  const inputFields = Array.from(form.querySelectorAll('.form__input'));
-  errorFields.forEach((field) => {
-    field.textContent = '';
+function resetErrorsForm(errors, inputs) {
+  errors.forEach((error) => {
+    error.textContent = '';
   });
-  inputFields.forEach((field) => {
-    field.classList.remove('form__input_invalid');
+  inputs.forEach((input) => {
+    input.classList.remove('form__input_invalid');
   })
 }
 
@@ -156,7 +160,7 @@ function resetErrorsForm(form) {
 formPlace.addEventListener('submit', submitFormPlace);
 formProfile.addEventListener('submit', submitFormProfile);
 btnProfileEdit.addEventListener('click', () => {
-  resetErrorsForm(formProfile);
+  resetErrorsForm(errorFieldsProfile, inputFieldsProfile);
   fillUserData();
   btnSubmitProfile.disabled = false;
   btnSubmitProfile.classList.remove('form__button_disactive');
@@ -164,7 +168,7 @@ btnProfileEdit.addEventListener('click', () => {
 });
 btnAddPlace.addEventListener('click', () => {
   formPlace.reset(); // очистка ранее введенных данных в инпутах
-  resetErrorsForm(formPlace);
+  resetErrorsForm(errorFieldsPlace, inputFieldsPlace);
   btnSubmitPlace.disabled = true; // защита от введения пустых данных
   btnSubmitPlace.classList.add('form__button_disactive');
   openPopup(popupPlace);
