@@ -1,4 +1,6 @@
 import {initialCards} from './fixture.js';
+import {Card} from './Card.js';
+import {FormValidator} from './FormValidator.js'
 
 // данные пользователя
 const userName = document.querySelector('.intro__user-name');
@@ -7,15 +9,16 @@ const userOccupation = document.querySelector('.profile__occupation');
 // всплывающие окна
 const popupProfile = document.querySelector('#popup-profile');
 const popupPlace = document.querySelector('#popup-place');
-const popupImage = document.querySelector('#popup-image');
+export const popupImage = document.querySelector('#popup-image');
 
 // карточки мест и шаблон
 const placesList = document.querySelector('.places__items');
-const placesTemplate = document.querySelector('.places__item-template').content;
+// const placesTemplate = document.querySelector('.places__item-template').content;
 
 // формы для отправки данных, введенных пользователем
 const formPlace = document.querySelector('#form-place');
 const formProfile = document.querySelector('#form-profile');
+const formList = [formPlace, formProfile];
 const inputNameForm = document.querySelector('#user-name');
 const inputOccupationForm = document.querySelector('#user-occupation');
 const inputPlaceForm = document.querySelector('#place-name');
@@ -38,35 +41,29 @@ const inputFieldsPlace = Array.from(formPlace.querySelectorAll('.form__input'));
 const errorFieldsProfile = Array.from(formProfile.querySelectorAll('.form__input-error'));
 const inputFieldsProfile = Array.from(formProfile.querySelectorAll('.form__input'));
 
-// генерация элементов из массива в карточки мест
-initialCards.forEach((item) => {
-  placesList.append(createCard(item));
-});
-
-
-// функция создания новой карточки места и диспетчера событий
-function createCard(item) {
-  const newPlace = placesTemplate.cloneNode(true);
-  const placeImage = newPlace.querySelector('.places__image')
-  placeImage.src = item.link;
-  placeImage.alt = item.name;
-  newPlace.querySelector('.places__name').textContent = item.name;
-  // создаю диспетчеры событий
-  newPlace.querySelector('.places__item').addEventListener('click', (evt) => {
-    fillImageData(item);
-    openPopup(popupImage);
-    popupImage.classList.add('popup_darker');
-  });
-  newPlace.querySelector('.places__basket').addEventListener('click', (evt) => {
-    evt.target.closest('.places__item').remove();
-    evt.stopPropagation(); // запрещает подниматься клику до родителя
-  });
-  newPlace.querySelector('.places__favorite').addEventListener('click', (evt) => {
-    evt.target.classList.toggle('places__favorite_active');
-    evt.stopPropagation(); // запрещает подниматься клику до родителя
-  });
-  return newPlace;
+// словарь с селекторами и классами форм, использую при валидации форм
+const dict = {
+  formSelector: '.form',
+  inputSelector: '.form__input',
+  submitButtonSelector: '.form__button',
+  disactiveButtonClass: 'form__button_disactive',
+  inputErrorClass: 'form__input_invalid',
+  errorClass: 'form__input-error_active'
 }
+
+
+// предварительное заполнение страницы карточками
+initialCards.forEach((item) => {
+  const _card = new Card(item, '.places__item-template').generateCard();
+  placesList.append(_card);
+})
+
+
+// создание валидаторов форм
+formList.forEach((formElement) => {
+  const formValidator = new FormValidator(dict, formElement);
+  formValidator.enableValidation()
+})
 
 
 // функция вставки текущих данных пользователя в форму
@@ -77,15 +74,15 @@ function fillUserData() {
 
 
 // функция заполнения аттрибутов картинки в тег <img>
-function fillImageData(item) {
-  image.src = item.link;
-  image.alt = item.name;
-  imageTitle.textContent = item.name;
+export function fillImageData(item) {
+  image.src = item._link;
+  image.alt = item._name;
+  imageTitle.textContent = item._name;
 }
 
 
 // функция открытия попапа
-function openPopup(popup) {
+export function openPopup(popup) {
   popup.classList.add('popup_opened');
   // слушатель кнопки Escape
   document.addEventListener('keydown', (evt) => {
@@ -115,7 +112,7 @@ function closeByOverlay(evt, popup) {
 
 
 // функция закрытия попапа
-function closePopup(popup) {
+export function closePopup(popup) {
   popup.classList.remove('popup_opened');
   document.removeEventListener('keydown', (evt) => {
     closeByEscape(evt, popup);
@@ -140,7 +137,8 @@ function submitFormPlace(evt) {
     name: inputPlaceForm.value,
     link: inputLinkForm.value
   };
-  placesList.prepend(createCard(newItem));
+  const _card = new Card(newItem, '.places__item-template').generateCard();
+  placesList.prepend(_card);
   closePopup(popupPlace);
 }
 
