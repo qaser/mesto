@@ -1,31 +1,34 @@
 export class FormValidator {
-  constructor(dict, formElement) {
-    this._dict = dict;
+  constructor(config, formElement) {
+    this._formSelector = config.formSelector;
+    this._inputSelector = config.inputSelector;
+    this._submitButtonSelector = config.submitButtonSelector;
+    this._disactiveButtonClass = config.disactiveButtonClass;
+    this._inputErrorClass = config.inputErrorClass;
+    this._errorClass = config.errorClass;
     this._formElement = formElement;
   }
 
   // метод установки слушателя на все инпуты формы
-  _setEventListeners(dict, formElement) {
-    const inputList = Array.from(formElement.querySelectorAll(dict.inputSelector));
-    const buttonElement = formElement.querySelector(dict.submitButtonSelector);
-    this._toggleButtonState(inputList, buttonElement, dict);
+  _setEventListeners(formElement) {
+    const inputList = Array.from(formElement.querySelectorAll(this._inputSelector));
+    const buttonElement = formElement.querySelector(this._submitButtonSelector);
+    this._toggleButtonState(inputList, buttonElement);
     inputList.forEach((inputElement) => {
       inputElement.addEventListener('input', () => {
-        this._checkInputValidity(formElement, inputElement, dict);
-        this._toggleButtonState(inputList, buttonElement, dict);
+        this._checkInputValidity(formElement, inputElement);
+        this._toggleButtonState(inputList, buttonElement);
       });
     });
   }
 
   // метод переключения активности кнопки
-  _toggleButtonState(inputList, buttonElement, dict) {
+  _toggleButtonState(inputList, buttonElement) {
     if (this._hasInvalidInput(inputList)) {
-      buttonElement.classList.add(dict.disactiveButtonClass);
-      buttonElement.disabled = true;
+      buttonPassive(buttonElement, this._disactiveButtonClass);
     }
     else {
-      buttonElement.classList.remove(dict.disactiveButtonClass);
-      buttonElement.disabled = false;
+      buttonActive(buttonElement, this._disactiveButtonClass);
     }
   }
 
@@ -37,27 +40,27 @@ export class FormValidator {
   }
 
   // метод для отображения ошибки инпута формы
-  _showInputError(formElement, inputElement, errorMessage, dict) {
+  _showInputError(formElement, inputElement, errorMessage) {
     const errorElement = formElement.querySelector(`#${inputElement.id}-error`);
-    inputElement.classList.add(dict.inputErrorClass);
+    inputElement.classList.add(this._inputErrorClass);
     errorElement.textContent = errorMessage;
-    errorElement.classList.add(dict.errorClass);
+    errorElement.classList.add(this._errorClass);
   }
 
   // метод для скрытия ошибки инпута формы
-  _hideInputError(formElement, inputElement, dict) {
+  _hideInputError(formElement, inputElement) {
     const errorElement = formElement.querySelector(`#${inputElement.id}-error`);
-    inputElement.classList.remove(dict.inputErrorClass);
-    errorElement.classList.remove(dict.errorClass);
+    inputElement.classList.remove(this._inputErrorClass);
+    errorElement.classList.remove(this._errorClass);
     errorElement.textContent = '';
   }
 
   // метод проверки валидности поля формы
-  _checkInputValidity(formElement, inputElement, dict) {
+  _checkInputValidity(formElement, inputElement) {
     if (!inputElement.validity.valid) {
-      this._showInputError(formElement, inputElement, inputElement.validationMessage, dict);
+      this._showInputError(formElement, inputElement, inputElement.validationMessage);
     } else {
-      this._hideInputError(formElement, inputElement, dict);
+      this._hideInputError(formElement, inputElement);
     }
   }
 
@@ -65,6 +68,20 @@ export class FormValidator {
     this._formElement.addEventListener('submit', (evt) => {
       evt.preventDefault();
     });
-    this._setEventListeners(this._dict, this._formElement);
+    this._setEventListeners(this._formElement);
   }
+}
+
+
+// функция перевода кнопки в пассивный режим
+export function buttonPassive(button, buttonClass) {
+  button.classList.add(buttonClass);
+  button.disabled = true;
+}
+
+
+// функция перевода кнопки в активный режим
+export function buttonActive(button, buttonClass) {
+  button.classList.remove(buttonClass);
+  button.disabled = false;
 }

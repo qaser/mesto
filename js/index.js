@@ -1,6 +1,6 @@
 import {initialCards} from './fixture.js';
 import {Card} from './Card.js';
-import {FormValidator} from './FormValidator.js'
+import {FormValidator, buttonActive, buttonPassive} from './FormValidator.js'
 
 // данные пользователя
 const userName = document.querySelector('.intro__user-name');
@@ -13,7 +13,6 @@ export const popupImage = document.querySelector('#popup-image');
 
 // карточки мест и шаблон
 const placesList = document.querySelector('.places__items');
-// const placesTemplate = document.querySelector('.places__item-template').content;
 
 // формы для отправки данных, введенных пользователем
 const formPlace = document.querySelector('#form-place');
@@ -42,7 +41,7 @@ const errorFieldsProfile = Array.from(formProfile.querySelectorAll('.form__input
 const inputFieldsProfile = Array.from(formProfile.querySelectorAll('.form__input'));
 
 // словарь с селекторами и классами форм, использую при валидации форм
-const dict = {
+const config = {
   formSelector: '.form',
   inputSelector: '.form__input',
   submitButtonSelector: '.form__button',
@@ -51,18 +50,24 @@ const dict = {
   errorClass: 'form__input-error_active'
 }
 
+// функция для создания экземпляра карточки
+function renderCard(item) {
+  const cardInstance = new Card(item, '.places__item-template').generateCard();
+  return cardInstance;
+}
+
 
 // предварительное заполнение страницы карточками
 initialCards.forEach((item) => {
-  const _card = new Card(item, '.places__item-template').generateCard();
+  const _card = renderCard(item);
   placesList.append(_card);
 })
 
 
 // создание валидаторов форм
 formList.forEach((formElement) => {
-  const formValidator = new FormValidator(dict, formElement);
-  formValidator.enableValidation()
+  const formValidator = new FormValidator(config, formElement);
+  formValidator.enableValidation();
 })
 
 
@@ -114,12 +119,8 @@ function closeByOverlay(evt, popup) {
 // функция закрытия попапа
 export function closePopup(popup) {
   popup.classList.remove('popup_opened');
-  document.removeEventListener('keydown', (evt) => {
-    closeByEscape(evt, popup);
-  })
-  popup.removeEventListener('click', (evt) => {
-    closeByOverlay(evt, popup);
-  })
+  document.removeEventListener("keydown", closeByEscape);
+  document.removeEventListener("click", closeByOverlay);
 }
 
 
@@ -137,7 +138,7 @@ function submitFormPlace(evt) {
     name: inputPlaceForm.value,
     link: inputLinkForm.value
   };
-  const _card = new Card(newItem, '.places__item-template').generateCard();
+  const _card = renderCard(newItem);
   placesList.prepend(_card);
   closePopup(popupPlace);
 }
@@ -160,15 +161,13 @@ formProfile.addEventListener('submit', submitFormProfile);
 btnProfileEdit.addEventListener('click', () => {
   resetErrorsForm(errorFieldsProfile, inputFieldsProfile);
   fillUserData();
-  btnSubmitProfile.disabled = false;
-  btnSubmitProfile.classList.remove('form__button_disactive');
+  buttonActive(btnSubmitProfile, 'form__button_disactive') // активация кнопки
   openPopup(popupProfile);
 });
 btnAddPlace.addEventListener('click', () => {
   formPlace.reset(); // очистка ранее введенных данных в инпутах
   resetErrorsForm(errorFieldsPlace, inputFieldsPlace);
-  btnSubmitPlace.disabled = true; // защита от введения пустых данных
-  btnSubmitPlace.classList.add('form__button_disactive');
+  buttonPassive(btnSubmitPlace, 'form__button_disactive') // кнопка пассивна
   openPopup(popupPlace);
 });
 // обработчики для кнопок закрытия

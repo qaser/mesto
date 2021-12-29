@@ -8,12 +8,16 @@ export class Card {
   }
 
   _getTemplate() {
-    const cardElement = document.querySelector(this._cardSelector).content.cloneNode(true);
-    return cardElement;
+  const cardElement = document
+    .querySelector(this._cardSelector)
+    .content
+    .querySelector('.places__item')
+    .cloneNode(true);
+  return cardElement;
   }
 
   _setEventListeners() {
-    this._element.querySelector('.places__item').addEventListener('click', () => {
+    this._element.addEventListener('click', () => {
       // здесь, мне кажется, лучше не обращаться к внешним функциям, но пока так
       fillImageData(this);
       openPopup(popupImage);
@@ -28,20 +32,22 @@ export class Card {
   }
 
   _handleDeleteCard(evt) {
-    evt.target.closest('.places__item').remove();
+    this._element.remove();
+    this._element = null;
     evt.stopPropagation(); // запрещает подниматься клику до родителя
   }
 
   _handleFavoriteCard(evt) {
-    evt.target.classList.toggle('places__favorite_active');
+    this._element.querySelector('.places__favorite').classList.toggle('places__favorite_active');
     evt.stopPropagation();
   }
 
   generateCard() {
     this._element = this._getTemplate();
     this._setEventListeners();
-    this._element.querySelector('.places__image').src = this._link;
-    this._element.querySelector('.places__image').alt = this._name;
+    const imageSelector = this._element.querySelector('.places__image');
+    imageSelector.src = this._link;
+    imageSelector.alt = this._name;
     this._element.querySelector('.places__name').textContent = this._name;
     return this._element
   }
