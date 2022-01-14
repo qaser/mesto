@@ -1,4 +1,5 @@
-import {fillImageData, popupImage, openPopup} from './index.js';
+import {fillImageData, openPopup} from '../pages/index.js';
+import { popupImage } from '../utils/constants.js';
 
 export class Card {
   constructor(data, cardSelector) {
@@ -18,7 +19,6 @@ export class Card {
 
   _setEventListeners() {
     this._element.addEventListener('click', () => {
-      // здесь, мне кажется, лучше не обращаться к внешним функциям, но пока так
       fillImageData(this);
       openPopup(popupImage);
       popupImage.classList.add('popup_darker');
@@ -49,6 +49,7 @@ export class Card {
     imageSelector.src = this._link;
     imageSelector.alt = this._name;
     this._element.querySelector('.places__name').textContent = this._name;
+
     return this._element
   }
 }

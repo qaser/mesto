@@ -1,0 +1,24 @@
+{
+  "name": "mesto",
+  "version": "1.0.0",
+  "description": "Этот проект был реализован для обучения базовым навыкам верстки адаптивных веб-страниц и использования JavaScript во время учебного курса \"Веб-разработчик\" на платформе Яндекс.Практикум",
+  "main": "index.js",
+  "dependencies": {
+    "eslint": "^8.3.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "build": "webpack"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/qaser/mesto.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/qaser/mesto/issues"
+  },
+  "homepage": "https://github.com/qaser/mesto#readme"
+}

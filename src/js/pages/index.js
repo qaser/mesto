@@ -1,67 +1,28 @@
-import {initialCards} from './fixture.js';
-import {Card} from './Card.js';
-import {FormValidator, buttonActive, buttonPassive} from './FormValidator.js'
+import {
+  initialCards,
+  placesList,
+  formList,
+  config,
+  formPlace,
+  formProfile,
+  btnProfileEdit,
+  btnAddPlace,
+  btnsClosePopup
+} from '../utils/constants.js';
+import { Card } from '../components/Card.js';
+import Section from '../components/Section.js'
+import { FormValidator, buttonActive, buttonPassive } from '../components/FormValidator.js'
 
-// данные пользователя
-const userName = document.querySelector('.intro__user-name');
-const userOccupation = document.querySelector('.profile__occupation');
+const cardList = new Section({
+  items: initialCards,
+  renderer: (item) => {
+    const card = new Card(item, '.places__item-template');
+    const cardElement = card.generateCard();
+    cardList.setItem(cardElement);
+  }
+}, '.places__items');
 
-// всплывающие окна
-const popupProfile = document.querySelector('#popup-profile');
-const popupPlace = document.querySelector('#popup-place');
-export const popupImage = document.querySelector('#popup-image');
-
-// карточки мест и шаблон
-const placesList = document.querySelector('.places__items');
-
-// формы для отправки данных, введенных пользователем
-const formPlace = document.querySelector('#form-place');
-const formProfile = document.querySelector('#form-profile');
-const formList = [formPlace, formProfile];
-const inputNameForm = document.querySelector('#user-name');
-const inputOccupationForm = document.querySelector('#user-occupation');
-const inputPlaceForm = document.querySelector('#place-name');
-const inputLinkForm = document.querySelector('#place-link');
-
-// кнопки
-const btnProfileEdit = document.querySelector('.intro__edit-button');
-const btnAddPlace = document.querySelector('.profile__button');
-const btnsClosePopup = document.querySelectorAll('.popup__button-close');
-const btnSubmitProfile = formProfile.querySelector('.form__button');
-const btnSubmitPlace = formPlace.querySelector('.form__button');
-
-// атрибуты картинки
-const image = popupImage.querySelector('.popup__image');
-const imageTitle = popupImage.querySelector('.popup__image-title');
-
-// ошибки форм
-const errorFieldsPlace = Array.from(formPlace.querySelectorAll('.form__input-error'));
-const inputFieldsPlace = Array.from(formPlace.querySelectorAll('.form__input'));
-const errorFieldsProfile = Array.from(formProfile.querySelectorAll('.form__input-error'));
-const inputFieldsProfile = Array.from(formProfile.querySelectorAll('.form__input'));
-
-// словарь с селекторами и классами форм, использую при валидации форм
-const config = {
-  formSelector: '.form',
-  inputSelector: '.form__input',
-  submitButtonSelector: '.form__button',
-  disactiveButtonClass: 'form__button_disactive',
-  inputErrorClass: 'form__input_invalid',
-  errorClass: 'form__input-error_active'
-}
-
-// функция для создания экземпляра карточки
-function renderCard(item) {
-  const cardInstance = new Card(item, '.places__item-template').generateCard();
-  return cardInstance;
-}
-
-
-// предварительное заполнение страницы карточками
-initialCards.forEach((item) => {
-  const _card = renderCard(item);
-  placesList.append(_card);
-})
+cardList.renderItems();
 
 
 // создание валидаторов форм
