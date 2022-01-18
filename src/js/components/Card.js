@@ -1,11 +1,9 @@
-import {fillImageData, openPopup} from '../pages/index.js';
-import { popupImage } from '../utils/constants.js';
-
 export class Card {
-  constructor(data, cardSelector) {
+  constructor(data, handleCardClick, cardSelector) {
     this._link = data.link;
     this._name = data.name;
     this._cardSelector = cardSelector;
+    this._handleCardClick = handleCardClick;
   }
 
   _getTemplate() {
@@ -19,9 +17,7 @@ export class Card {
 
   _setEventListeners() {
     this._element.addEventListener('click', () => {
-      fillImageData(this);
-      openPopup(popupImage);
-      popupImage.classList.add('popup_darker');
+      this._handleCardClick(this._name, this._link);
     });
     this._element.querySelector('.places__basket').addEventListener('click', (evt) => {
       this._handleDeleteCard(evt);
@@ -49,7 +45,6 @@ export class Card {
     imageSelector.src = this._link;
     imageSelector.alt = this._name;
     this._element.querySelector('.places__name').textContent = this._name;
-
     return this._element
   }
 }

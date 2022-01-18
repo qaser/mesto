@@ -4,18 +4,40 @@
   "description": "Этот проект был реализован для обучения базовым навыкам верстки адаптивных веб-страниц и использования JavaScript во время учебного курса \"Веб-разработчик\" на платформе Яндекс.Практикум",
   "main": "index.js",
   "dependencies": {
-    "eslint": "^8.3.0"
+    "core-js": "^3.20.3"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "@babel/core": "^7.16.7",
+    "@babel/preset-env": "^7.16.8",
+    "autoprefixer": "^10.4.2",
+    "babel-loader": "^8.2.3",
+    "clean-webpack-plugin": "^4.0.0",
+    "css-loader": "^6.5.1",
+    "cssnano": "^5.0.15",
+    "eslint": "^8.3.0",
+    "html-webpack-plugin": "^5.5.0",
+    "mini-css-extract-plugin": "^2.5.2",
+    "postcss-loader": "^6.2.1",
+    "webpack": "^5.66.0",
+    "webpack-cli": "^4.9.1",
+    "webpack-dev-server": "^4.7.3"
+  },
   "scripts": {
-    "build": "webpack"
+    "build": "webpack --mode production",
+    "dev": "webpack serve"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/qaser/mesto.git"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "js",
+    "webpack",
+    "learning",
+    "html",
+    "css"
+  ],
+  "author": "Alexey Saygin",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/qaser/mesto/issues"

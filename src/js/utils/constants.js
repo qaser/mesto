@@ -25,21 +25,9 @@ export const initialCards = [
   }
 ];
 
-// данные пользователя
-export const userName = document.querySelector('.intro__user-name');
-export const userOccupation = document.querySelector('.profile__occupation');
-
-// всплывающие окна
-export const popupProfile = document.querySelector('#popup-profile');
-export const popupPlace = document.querySelector('#popup-place');
-export const popupImage = document.querySelector('#popup-image');
-
-// карточки мест и шаблон
-export const placesList = document.querySelector('.places__items');
-
 // формы для отправки данных, введенных пользователем
-export const formPlace = document.querySelector('#form-place');
-export const formProfile = document.querySelector('#form-profile');
+const formPlace = document.querySelector('#form-place');
+const formProfile = document.querySelector('#form-profile');
 export const formList = [formPlace, formProfile];
 export const inputNameForm = document.querySelector('#user-name');
 export const inputOccupationForm = document.querySelector('#user-occupation');
@@ -49,13 +37,8 @@ export const inputLinkForm = document.querySelector('#place-link');
 // кнопки
 export const btnProfileEdit = document.querySelector('.intro__edit-button');
 export const btnAddPlace = document.querySelector('.profile__button');
-export const btnsClosePopup = document.querySelectorAll('.popup__button-close');
 export const btnSubmitProfile = formProfile.querySelector('.form__button');
 export const btnSubmitPlace = formPlace.querySelector('.form__button');
-
-// атрибуты картинки
-export const image = popupImage.querySelector('.popup__image');
-export const imageTitle = popupImage.querySelector('.popup__image-title');
 
 // ошибки форм
 export const errorFieldsPlace = Array.from(formPlace.querySelectorAll('.form__input-error'));

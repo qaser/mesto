@@ -1,107 +1,91 @@
-import {
-  initialCards,
-  placesList,
-  formList,
-  config,
-  formPlace,
-  formProfile,
-  btnProfileEdit,
-  btnAddPlace,
-  btnsClosePopup
-} from '../utils/constants.js';
+import '../../pages/index.css';
+import * as constant from '../utils/constants.js';
 import { Card } from '../components/Card.js';
-import Section from '../components/Section.js'
-import { FormValidator, buttonActive, buttonPassive } from '../components/FormValidator.js'
+import { UserInfo } from '../components/UserInfo.js';
+import { PopupWithImage } from '../components/PopupWithImage.js';
+import { PopupWithForm } from '../components/PopupWithForm.js';
+import Section from '../components/Section.js';
+import {
+  FormValidator,
+  buttonActive,
+  buttonPassive
+} from '../components/FormValidator.js';
 
+
+// формирование первоначальных карточек мест
 const cardList = new Section({
-  items: initialCards,
+  items: constant.initialCards,
   renderer: (item) => {
-    const card = new Card(item, '.places__item-template');
+    const card = new Card(item, handleCardClick, '.places__item-template');
     const cardElement = card.generateCard();
     cardList.setItem(cardElement);
-  }
-}, '.places__items');
-
+  },
+},
+'.places__items');
 cardList.renderItems();
 
 
+// создание объекта всплывающего окна с изображением
+const popupImage = new PopupWithImage('#popup-image');
+popupImage.setEventListeners();
+
+function handleCardClick(name, link) {
+  popupImage.open(name, link);
+}
+
+
+// создание объекта всплывающего окна с формой добавления карточки места
+const popupWithFormPlace = new PopupWithForm('#popup-place', '#form-place', (data) => {
+  submitFormPlace(data)
+});
+popupWithFormPlace.setEventListeners();
+
+
+// создание объекта всплывающего окна с формой редактирования пользователя
+const popupWithFormProfile = new PopupWithForm('#popup-profile', '#form-profile', (data) => {
+  submitFormProfile(data)
+});
+popupWithFormProfile.setEventListeners();
+
+
 // создание валидаторов форм
-formList.forEach((formElement) => {
-  const formValidator = new FormValidator(config, formElement);
+constant.formList.forEach((formElement) => {
+  const formValidator = new FormValidator(constant.config, formElement);
   formValidator.enableValidation();
 })
 
 
-// функция вставки текущих данных пользователя в форму
-function fillUserData() {
-  inputNameForm.value = userName.textContent;
-  inputOccupationForm.value = userOccupation.textContent;
-}
+// создание объекта с данными пользователя
+const newUserInfo = new UserInfo({
+  name: '.intro__user-name',
+  occupation: '.profile__occupation',
+});
 
 
-// функция заполнения аттрибутов картинки в тег <img>
-export function fillImageData(item) {
-  image.src = item._link;
-  image.alt = item._name;
-  imageTitle.textContent = item._name;
-}
-
-
-// функция открытия попапа
-export function openPopup(popup) {
-  popup.classList.add('popup_opened');
-  // слушатель кнопки Escape
-  document.addEventListener('keydown', (evt) => {
-    closeByEscape(evt, popup);
-  })
-  // слушатель нажатия вне попапа
-  popup.addEventListener('click', (evt) => {
-    closeByOverlay(evt, popup);
-  })
-}
-
-
-// закрытие попапа по нажатию кнопки Escape
-function closeByEscape(evt, popup) {
-  if (evt.key === 'Escape') {
-    closePopup(popup);
-  };
-};
-
-
-// закрытие попапа по нажатию вне попапа
-function closeByOverlay(evt, popup) {
-  if (evt.target === popup) {
-    closePopup(popup);
-  };
-};
-
-
-// функция закрытия попапа
-export function closePopup(popup) {
-  popup.classList.remove('popup_opened');
-  document.removeEventListener("keydown", closeByEscape);
-  document.removeEventListener("click", closeByOverlay);
+// функция отправки данных из формы для новой карточки места
+function submitFormPlace(data) {
+  const newItem = {
+    name: data.place,
+    link: data.link
+  }
+  const _card = new Card(newItem, handleCardClick, '.places__item-template');
+  const _cardElement = _card.generateCard()
+  cardList.setItemFront(_cardElement);
+  popupWithFormPlace.close();
 }
 
 
 // функция отправки данных, введенных в форму
-function submitFormProfile(evt) {
-  userName.textContent = inputNameForm.value;
-  userOccupation.textContent = inputOccupationForm.value;
-  closePopup(popupProfile);
+function submitFormProfile(data) {
+  newUserInfo.setUserInfo(data.name, data.occupation);
+  popupWithFormProfile.close();
 }
 
 
-// функция формирования данных из формы для новой карточки места
-function submitFormPlace(evt) {
-  const newItem = {
-    name: inputPlaceForm.value,
-    link: inputLinkForm.value
-  };
-  const _card = renderCard(newItem);
-  placesList.prepend(_card);
-  closePopup(popupPlace);
+// функция вставки текущих данных пользователя в форму
+function fillUserData() {
+  constant.inputNameForm.value = newUserInfo._name.textContent;
+  constant.inputOccupationForm.value = newUserInfo._occupation.textContent;
 }
 
 
@@ -116,25 +100,17 @@ function resetErrorsForm(errors, inputs) {
 }
 
 
-// диспетчеры событий
-formPlace.addEventListener('submit', submitFormPlace);
-formProfile.addEventListener('submit', submitFormProfile);
-btnProfileEdit.addEventListener('click', () => {
-  resetErrorsForm(errorFieldsProfile, inputFieldsProfile);
+// слушатель кнопки редактирования пользовательских данных
+constant.btnProfileEdit.addEventListener('click', () => {
+  resetErrorsForm(constant.errorFieldsProfile, constant.inputFieldsProfile);
   fillUserData();
-  buttonActive(btnSubmitProfile, 'form__button_disactive') // активация кнопки
-  openPopup(popupProfile);
+  buttonActive(constant.btnSubmitProfile, 'form__button_disactive') // активация кнопки
+  popupWithFormProfile.open();
 });
-btnAddPlace.addEventListener('click', () => {
-  formPlace.reset(); // очистка ранее введенных данных в инпутах
-  resetErrorsForm(errorFieldsPlace, inputFieldsPlace);
-  buttonPassive(btnSubmitPlace, 'form__button_disactive') // кнопка пассивна
-  openPopup(popupPlace);
-});
-// обработчики для кнопок закрытия
-btnsClosePopup.forEach((btn) => {
-  const popup = btn.closest('.popup');
-  btn.addEventListener('click', () => {
-    closePopup(popup);
-  });
+
+// слушатель кнопки добавления новой карточки места
+constant.btnAddPlace.addEventListener('click', () => {
+  resetErrorsForm(constant.errorFieldsPlace, constant.inputFieldsPlace);
+  buttonPassive(constant.btnSubmitPlace, 'form__button_disactive') // кнопка пассивна
+  popupWithFormPlace.open();
 });
