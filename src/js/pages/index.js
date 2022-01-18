@@ -1,4 +1,3 @@
-import '../../pages/index.css';
 import * as constant from '../utils/constants.js';
 import { Card } from '../components/Card.js';
 import { UserInfo } from '../components/UserInfo.js';
