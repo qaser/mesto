@@ -1,23 +1,28 @@
-import * as constant from '../utils/constants.js';
-import { Card } from '../components/Card.js';
-import { UserInfo } from '../components/UserInfo.js';
-import { PopupWithImage } from '../components/PopupWithImage.js';
-import { PopupWithForm } from '../components/PopupWithForm.js';
-import Section from '../components/Section.js';
-import {
-  FormValidator,
-  buttonActive,
-  buttonPassive
-} from '../components/FormValidator.js';
+import * as constant from '../js/utils/constants.js';
+import Card from '../js/components/Card.js';
+import UserInfo from '../js/components/UserInfo.js';
+import PopupWithImage from '../js/components/PopupWithImage.js';
+import PopupWithForm from '../js/components/PopupWithForm.js';
+import Section from '../js/components/Section.js';
+import FormValidator from '../js/components/FormValidator.js';
+
+
+const formValidators = {};
+
+
+function createCard(item) {
+  const card = new Card(item, handleCardClick, '.places__item-template');
+  const cardElement = card.generateCard();
+  return cardElement;
+}
 
 
 // формирование первоначальных карточек мест
 const cardList = new Section({
   items: constant.initialCards,
   renderer: (item) => {
-    const card = new Card(item, handleCardClick, '.places__item-template');
-    const cardElement = card.generateCard();
-    cardList.setItem(cardElement);
+    const newCard = createCard(item);
+    cardList.setItem(newCard);
   },
 },
 '.places__items');
@@ -35,23 +40,30 @@ function handleCardClick(name, link) {
 
 // создание объекта всплывающего окна с формой добавления карточки места
 const popupWithFormPlace = new PopupWithForm('#popup-place', '#form-place', (data) => {
-  submitFormPlace(data)
+  submitFormPlace(data);
 });
 popupWithFormPlace.setEventListeners();
 
 
 // создание объекта всплывающего окна с формой редактирования пользователя
 const popupWithFormProfile = new PopupWithForm('#popup-profile', '#form-profile', (data) => {
-  submitFormProfile(data)
+  submitFormProfile(data);
 });
 popupWithFormProfile.setEventListeners();
 
 
-// создание валидаторов форм
-constant.formList.forEach((formElement) => {
-  const formValidator = new FormValidator(constant.config, formElement);
-  formValidator.enableValidation();
-})
+// универсальная функция для валидации форм (доступ по имени формы)
+const enableValidation = (config) => {
+  const formList = Array.from(document.querySelectorAll(config.formSelector));
+  formList.forEach((formElement) => {
+    const validator = new FormValidator(config, formElement);
+    // получаем данные из атрибута `name` у формы
+    const formName = formElement.getAttribute('name');
+    formValidators[formName] = validator;
+    validator.enableValidation();
+  });
+};
+enableValidation(constant.config);
 
 
 // создание объекта с данными пользователя
@@ -66,10 +78,9 @@ function submitFormPlace(data) {
   const newItem = {
     name: data.place,
     link: data.link
-  }
-  const _card = new Card(newItem, handleCardClick, '.places__item-template');
-  const _cardElement = _card.generateCard()
-  cardList.setItemFront(_cardElement);
+  };
+  const _newCard = createCard(newItem);
+  cardList.setItemFront(_newCard);
   popupWithFormPlace.close();
 }
 
@@ -83,33 +94,28 @@ function submitFormProfile(data) {
 
 // функция вставки текущих данных пользователя в форму
 function fillUserData() {
-  constant.inputNameForm.value = newUserInfo._name.textContent;
-  constant.inputOccupationForm.value = newUserInfo._occupation.textContent;
-}
-
-
-// сброс сообщений валидации и стиля полей
-function resetErrorsForm(errors, inputs) {
-  errors.forEach((error) => {
-    error.textContent = '';
-  });
-  inputs.forEach((input) => {
-    input.classList.remove('form__input_invalid');
-  })
+  constant.inputNameForm.value = newUserInfo.getUserInfo().name;
+  constant.inputOccupationForm.value = newUserInfo.getUserInfo().occupation;
 }
 
 
 // слушатель кнопки редактирования пользовательских данных
 constant.btnProfileEdit.addEventListener('click', () => {
-  resetErrorsForm(constant.errorFieldsProfile, constant.inputFieldsProfile);
+  formValidators['edit-user'].resetErrors();
   fillUserData();
-  buttonActive(constant.btnSubmitProfile, 'form__button_disactive') // активация кнопки
+  formValidators['edit-user'].buttonActive(
+    constant.btnSubmitProfile,
+    'form__button_disactive'
+  );
   popupWithFormProfile.open();
 });
 
 // слушатель кнопки добавления новой карточки места
 constant.btnAddPlace.addEventListener('click', () => {
-  resetErrorsForm(constant.errorFieldsPlace, constant.inputFieldsPlace);
-  buttonPassive(constant.btnSubmitPlace, 'form__button_disactive') // кнопка пассивна
+  formValidators['add-place'].resetErrors();
+  formValidators['add-place'].buttonPassive(
+    constant.btnSubmitPlace,
+    'form__button_disactive'
+  );
   popupWithFormPlace.open();
 });

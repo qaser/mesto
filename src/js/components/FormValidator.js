@@ -1,4 +1,4 @@
-export class FormValidator {
+export default class FormValidator {
   constructor(config, formElement) {
     this._formSelector = config.formSelector;
     this._inputSelector = config.inputSelector;
@@ -7,17 +7,22 @@ export class FormValidator {
     this._inputErrorClass = config.inputErrorClass;
     this._errorClass = config.errorClass;
     this._formElement = formElement;
+    this._inputList = Array.from(
+      this._formElement.querySelectorAll(config.inputSelector)
+    );
+    this._errorList = Array.from(
+      this._formElement.querySelectorAll('.form__input-error')
+    );
+    this._buttonElement = this._formElement.querySelector(this._submitButtonSelector);
   }
 
   // метод установки слушателя на все инпуты формы
-  _setEventListeners(formElement) {
-    const inputList = Array.from(formElement.querySelectorAll(this._inputSelector));
-    const buttonElement = formElement.querySelector(this._submitButtonSelector);
-    this._toggleButtonState(inputList, buttonElement);
-    inputList.forEach((inputElement) => {
+  _setEventListeners() {
+    this._toggleButtonState(this._inputList, this._buttonElement);
+    this._inputList.forEach((inputElement) => {
       inputElement.addEventListener('input', () => {
-        this._checkInputValidity(formElement, inputElement);
-        this._toggleButtonState(inputList, buttonElement);
+        this._checkInputValidity(this._formElement, inputElement);
+        this._toggleButtonState(this._inputList, this._buttonElement);
       });
     });
   }
@@ -25,10 +30,10 @@ export class FormValidator {
   // метод переключения активности кнопки
   _toggleButtonState(inputList, buttonElement) {
     if (this._hasInvalidInput(inputList)) {
-      buttonPassive(buttonElement, this._disactiveButtonClass);
+      this.buttonPassive(buttonElement, this._disactiveButtonClass);
     }
     else {
-      buttonActive(buttonElement, this._disactiveButtonClass);
+      this.buttonActive(buttonElement, this._disactiveButtonClass);
     }
   }
 
@@ -68,20 +73,26 @@ export class FormValidator {
     this._formElement.addEventListener('submit', (evt) => {
       evt.preventDefault();
     });
-    this._setEventListeners(this._formElement);
+    this._setEventListeners();
   }
-}
 
+  buttonPassive(button, buttonClass) {
+    button.classList.add(buttonClass);
+    button.disabled = true;
+  }
 
-// функция перевода кнопки в пассивный режим
-export function buttonPassive(button, buttonClass) {
-  button.classList.add(buttonClass);
-  button.disabled = true;
-}
+  buttonActive(button, buttonClass) {
+    button.classList.remove(buttonClass);
+    button.disabled = false;
+  }
 
-
-// функция перевода кнопки в активный режим
-export function buttonActive(button, buttonClass) {
-  button.classList.remove(buttonClass);
-  button.disabled = false;
+  // сброс сообщений валидации и стиля полей
+  resetErrors() {
+    this._errorList.forEach((error) => {
+      error.textContent = '';
+    });
+    this._inputList.forEach((input) => {
+      input.classList.remove('form__input_invalid');
+    })
+  }
 }

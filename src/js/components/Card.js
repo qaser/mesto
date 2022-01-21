@@ -1,4 +1,4 @@
-export class Card {
+export default class Card {
   constructor(data, handleCardClick, cardSelector) {
     this._link = data.link;
     this._name = data.name;
@@ -19,10 +19,10 @@ export class Card {
     this._element.addEventListener('click', () => {
       this._handleCardClick(this._name, this._link);
     });
-    this._element.querySelector('.places__basket').addEventListener('click', (evt) => {
+    this._elementBasket.addEventListener('click', (evt) => {
       this._handleDeleteCard(evt);
     });
-    this._element.querySelector('.places__favorite').addEventListener('click', (evt) => {
+    this._elementFavor.addEventListener('click', (evt) => {
       this._handleFavoriteCard(evt);
     });
   }
@@ -34,17 +34,20 @@ export class Card {
   }
 
   _handleFavoriteCard(evt) {
-    this._element.querySelector('.places__favorite').classList.toggle('places__favorite_active');
+    this._elementFavor.classList.toggle('places__favorite_active');
     evt.stopPropagation();
   }
 
   generateCard() {
     this._element = this._getTemplate();
+    this._elementImage = this._element.querySelector('.places__image');
+    this._elementFavor = this._element.querySelector('.places__favorite');
+    this._elementBasket = this._element.querySelector('.places__basket');
+    this._elementName = this._element.querySelector('.places__name');
     this._setEventListeners();
-    const imageSelector = this._element.querySelector('.places__image');
-    imageSelector.src = this._link;
-    imageSelector.alt = this._name;
-    this._element.querySelector('.places__name').textContent = this._name;
+    this._elementImage.src = this._link;
+    this._elementImage.alt = this._name;
+    this._elementName.textContent = this._name;
     return this._element
   }
 }
