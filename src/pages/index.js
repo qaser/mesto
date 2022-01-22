@@ -101,21 +101,15 @@ function fillUserData() {
 
 // слушатель кнопки редактирования пользовательских данных
 constant.btnProfileEdit.addEventListener('click', () => {
-  formValidators['edit-user'].resetErrors();
   fillUserData();
-  formValidators['edit-user'].buttonActive(
-    constant.btnSubmitProfile,
-    'form__button_disactive'
-  );
+  formValidators['edit-user'].resetValidation()
+  // formValidators['edit-user'].enableButton();
   popupWithFormProfile.open();
 });
 
 // слушатель кнопки добавления новой карточки места
 constant.btnAddPlace.addEventListener('click', () => {
-  formValidators['add-place'].resetErrors();
-  formValidators['add-place'].buttonPassive(
-    constant.btnSubmitPlace,
-    'form__button_disactive'
-  );
+  formValidators['add-place'].resetValidation()
+  // formValidators['add-place'].disableButton();
   popupWithFormPlace.open();
 });
