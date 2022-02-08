@@ -2,6 +2,7 @@ export default class UserInfo {
   constructor(data) {
     this._name = document.querySelector(data.name);
     this._occupation = document.querySelector(data.occupation);
+    this._avatar = document.querySelector(data.avatar);
     this._userData = {};
   }
 
@@ -14,5 +15,9 @@ export default class UserInfo {
   setUserInfo(name, occupation) {
     this._name.textContent = name;
     this._occupation.textContent = occupation;
+  }
+
+  setUserAvatar(avatarLink) {
+    this._avatar.src = avatarLink;
   }
 }

@@ -1,14 +1,14 @@
 .form__field {
-  margin: 38px 0 25px 0;
+  margin: 25px 0 0 0;
   position: relative;
 }
 
-.form__field:last-of-type {
-  margin: 0;
+.form__field:first-of-type {
+  margin: 38px 0 0 0;
 }
 
 @media screen and (max-width: 600px) {
-  .form__field:last-of-type {
-    margin-top: 25px;
+  .form__field:first-of-type {
+    margin: 25px 0 0 0;
   }
 }

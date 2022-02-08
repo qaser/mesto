@@ -1,5 +1,10 @@
 import '../../pages/index.css';
 
+export const apiConfig = {
+  url: 'https://mesto.nomoreparties.co/v1/cohort-35',
+  token: '2918e5e1-ec7f-40fa-9e65-9ce4b0a59553',
+}
+
 export const initialCards = [
   {
     name: 'Архыз',
@@ -34,6 +39,7 @@ export const inputNameForm = document.querySelector('#user-name');
 export const inputOccupationForm = document.querySelector('#user-occupation');
 
 // кнопки
+export const btnAvatarEdit = document.querySelector('.profile__button-avatar');
 export const btnProfileEdit = document.querySelector('.intro__edit-button');
 export const btnAddPlace = document.querySelector('.profile__button');
 export const btnSubmitProfile = formProfile.querySelector('.form__button');

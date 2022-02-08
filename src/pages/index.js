@@ -1,6 +1,8 @@
 import * as constant from '../js/utils/constants.js';
 import Card from '../js/components/Card.js';
 import UserInfo from '../js/components/UserInfo.js';
+import Api from '../js/api/Api.js';
+import Popup from '../js/components/Popup.js';
 import PopupWithImage from '../js/components/PopupWithImage.js';
 import PopupWithForm from '../js/components/PopupWithForm.js';
 import Section from '../js/components/Section.js';
@@ -10,28 +12,48 @@ import FormValidator from '../js/components/FormValidator.js';
 const formValidators = {};
 
 
+const api = new Api({
+  baseUrl: constant.apiConfig.url,
+  headers: {
+    authorization: constant.apiConfig.token,
+    'Content-Type': 'application/json'
+  }
+});
+
+
 function createCard(item) {
-  const card = new Card(item, handleCardClick, '.places__item-template');
+  const card = new Card(api, item, handleCardClick, '.places__item-template');
   const cardElement = card.generateCard();
   return cardElement;
 }
 
 
-// формирование первоначальных карточек мест
-const cardList = new Section({
-  items: constant.initialCards,
-  renderer: (item) => {
-    const newCard = createCard(item);
-    cardList.setItem(newCard);
-  },
-},
-'.places__items');
-cardList.renderItems();
+// функция формирование первоначальных карточек мест
+function getCards() {
+  api.getInitialCards()
+    .then((cards) => {
+      const cardList = new Section({
+        items: cards,
+        renderer: (item) => {
+          const newCard = createCard(item);
+          cardList.setItem(newCard);
+        },
+      },
+      '.places__items');
+      cardList.renderItems();
+    })
+    .catch(err => {
+      console.log(err)
+    });
+}
+
+getCards(); // первоначальная загрузка карточек с сервера
 
 
 // создание объекта всплывающего окна с изображением
 const popupImage = new PopupWithImage('#popup-image');
 popupImage.setEventListeners();
+
 
 function handleCardClick(name, link) {
   popupImage.open(name, link);
@@ -52,6 +74,13 @@ const popupWithFormProfile = new PopupWithForm('#popup-profile', '#form-profile'
 popupWithFormProfile.setEventListeners();
 
 
+// создание объекта всплывающего окна с формой подтверждения удаления карточки
+const popupWithFormAvatar = new PopupWithForm('#popup-avatar', '#form-avatar', (data) => {
+  submitFormAvatar(data);
+});
+popupWithFormAvatar.setEventListeners();
+
+
 // универсальная функция для валидации форм (доступ по имени формы)
 const enableValidation = (config) => {
   const formList = Array.from(document.querySelectorAll(config.formSelector));
@@ -70,17 +99,27 @@ enableValidation(constant.config);
 const newUserInfo = new UserInfo({
   name: '.intro__user-name',
   occupation: '.profile__occupation',
+  avatar: '.profile__avatar',
 });
+
+
+// первичное заполнение данных пользователя
+api.getUser()
+  .then((userData) => {
+    newUserInfo.setUserInfo(userData.name, userData.about);
+    newUserInfo.setUserAvatar(userData.avatar);
+  })
 
 
 // функция отправки данных из формы для новой карточки места
 function submitFormPlace(data) {
   const newItem = {
     name: data.place,
-    link: data.link
+    link: data.link,
+    likes: [], // изначально лайков нет (пустой список)
   };
-  const _newCard = createCard(newItem);
-  cardList.setItemFront(_newCard);
+  api.addNewCard(newItem) // отправка запроса на сервер
+  getCards(); // получение данных с сервера
   popupWithFormPlace.close();
 }
 
@@ -89,6 +128,13 @@ function submitFormPlace(data) {
 function submitFormProfile(data) {
   newUserInfo.setUserInfo(data.name, data.occupation);
   popupWithFormProfile.close();
+}
+
+
+// функция отправки данных, введенных в форму
+function submitFormAvatar(data) {
+  newUserInfo.setUserAvatar(data.avatar);
+  popupWithFormAvatar.close();
 }
 
 
@@ -103,13 +149,17 @@ function fillUserData() {
 constant.btnProfileEdit.addEventListener('click', () => {
   fillUserData();
   formValidators['edit-user'].resetValidation()
-  // formValidators['edit-user'].enableButton();
   popupWithFormProfile.open();
 });
 
 // слушатель кнопки добавления новой карточки места
 constant.btnAddPlace.addEventListener('click', () => {
   formValidators['add-place'].resetValidation()
-  // formValidators['add-place'].disableButton();
   popupWithFormPlace.open();
+});
+
+// слушатель кнопки изменения аватара
+constant.btnAvatarEdit.addEventListener('click', () => {
+  formValidators['add-avatar'].resetValidation()
+  popupWithFormAvatar.open();
 });

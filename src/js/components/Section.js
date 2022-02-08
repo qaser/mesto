@@ -10,7 +10,6 @@ export default class Section {
   }
 
   // метод для добавления нового элемента в начало контейнера
-  // сделал для вариативности добавления элементов
   setItemFront(element) {
     this._container.prepend(element);
   }
