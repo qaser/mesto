@@ -4,7 +4,3 @@
   background-color: white;
   position: relative;
 }
-
-.places__item:hover {
-  cursor: pointer;
-}

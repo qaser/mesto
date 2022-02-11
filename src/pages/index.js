@@ -10,6 +10,7 @@ import FormValidator from '../js/components/FormValidator.js';
 
 
 const formValidators = {};
+let myId // переменная нужна для сохранения моего ID, использую в функции createCard
 
 // создание объекта api
 const api = new Api({
@@ -19,6 +20,15 @@ const api = new Api({
     'Content-Type': 'application/json'
   }
 });
+
+// экземпляр карточки
+const cardInstance = new Section({
+  renderer: (item) => {
+    const newCard = createCard(item);
+    cardInstance.setItem(newCard);
+  },
+},
+'.places__items');
 
 // создание объектов со всплывающими окнами
 const popupImage = new PopupWithImage('#popup-image');
@@ -72,7 +82,7 @@ const newUserInfo = new UserInfo({
 function createCard(item) {
   const card = new Card(
     api,
-    newUserInfo._userId,
+    myId,
     item,
     handleCardClick,
     handleCardBasketClick,
@@ -83,67 +93,34 @@ function createCard(item) {
 }
 
 
-// функция загрузки карточек с сервера
-function getCards() {
-  api.getInitialCards()
-    .then((cards) => {
-      const cardList = new Section({
-        items: cards,
-        renderer: (item) => {
-          const newCard = createCard(item);
-          cardList.setItem(newCard);
-        },
-      },
-      '.places__items');
-      cardList.renderItems();
-    })
-    .catch(err => {
-      console.log(err)
-    });
-}
-
-
 function handleCardClick(name, link) {
   popupImage.open(name, link);
 }
 
 
-function handleCardBasketClick(evt, card) {
-  popupWithConfirmForm.open(card);
-  popupWithConfirmForm.setEventListeners();
-}
-
-
-// заполнение данных пользователя
-function myProfile() {
-  api.getMyProfile()
-  .then((userData) => {
-    newUserInfo.setUserInfo(userData.name, userData.about);
-    newUserInfo.setUserAvatar(userData.avatar);
-    newUserInfo._userId = userData._id;
-  })
+function handleCardBasketClick(evt, cardId, element) {
+  popupWithConfirmForm.open(cardId, element);
 }
 
 
 // функция вставки текущих данных пользователя в форму
 function fillUserData() {
-  constant.inputNameForm.value = newUserInfo.getUserInfo().name;
-  constant.inputOccupationForm.value = newUserInfo.getUserInfo().occupation;
+  const userData = newUserInfo.getUserInfo()
+  constant.inputNameForm.value = userData.name;
+  constant.inputOccupationForm.value = userData.occupation;
 }
 
 
 // функция отправки данных после подтверждения
-function submitConfirmForm(card) {
-  api.deleteCard(card._cardId)
-  .then((res) => {
-    if (res.ok) {
-      card._element.remove();
-      card._element = null;
-      popupWithConfirmForm.close();
-    }
+function submitConfirmForm(cardId, element) {
+  api.deleteCard(cardId)
+  .then(() => {
+    element.remove();
+    element = null;
+    popupWithConfirmForm.close();
   })
   .catch((err) => {
-    Promise.reject(`Ошибка: ${err.status}`);
+    console.log(`Ошибка: ${err.status}`);
   })
 }
 
@@ -157,16 +134,15 @@ function submitFormPlace(data) {
   };
   popupWithFormPlace.renderLoading(true)
   api.addNewCard(newItem) // отправка запроса на сервер
-    .then((res) => {
-      if (res.ok) {
-        getCards() // получение данных с сервера
-        popupWithFormPlace.close();
-      }
+    .then((card) => {
+      const newCard = createCard(card);
+      cardInstance.setItemFront(newCard);
+      popupWithFormPlace.close();
     })
     .catch((err) => {
-      Promise.reject(`Ошибка: ${err.status}`);
+      console.log(`Ошибка: ${err.status}`);
     })
-    .finally(popupWithFormPlace.renderLoading(false));
+    .finally(() => popupWithFormPlace.renderLoading(false));
 }
 
 
@@ -174,14 +150,14 @@ function submitFormPlace(data) {
 function submitFormProfile(data) {
   popupWithFormProfile.renderLoading(true);
   api.editMyProfile(data)
-    .then((res) => {
-      newUserInfo.setUserInfo(data.name, data.occupation);
+    .then((userData) => {
+      newUserInfo.setUserInfo(userData);
       popupWithFormProfile.close();
     })
     .catch((err) => {
-      Promise.reject(`Ошибка: ${err.status}`);
+      console.log(`Ошибка: ${err.status}`);
     })
-    .finally(popupWithFormProfile.renderLoading(false));
+    .finally(() => popupWithFormProfile.renderLoading(false));
 }
 
 
@@ -189,14 +165,14 @@ function submitFormProfile(data) {
 function submitFormAvatar(data) {
   popupWithFormAvatar.renderLoading(true);
   api.changeAvatar(data.avatar)
-    .then((res) => {
-      newUserInfo.setUserAvatar(data.avatar);
+    .then((userData) => {
+      newUserInfo.setUserInfo(userData);
       popupWithFormAvatar.close();
     })
     .catch((err) => {
-      Promise.reject(`Ошибка: ${err.status}`);
+      console.log(`Ошибка: ${err.status}`);
     })
-    .finally(popupWithFormAvatar.renderLoading(false));
+    .finally(() => popupWithFormAvatar.renderLoading(false));
 }
 
 
@@ -221,11 +197,20 @@ constant.btnAvatarEdit.addEventListener('click', () => {
 
 
 enableValidation(constant.config);
-myProfile();
-getCards(); // первоначальная загрузка карточек с сервера
-
 
 popupImage.setEventListeners();
 popupWithFormPlace.setEventListeners();
 popupWithFormProfile.setEventListeners();
 popupWithFormAvatar.setEventListeners();
+popupWithConfirmForm.setEventListeners();
+
+// промис (заполнение данных пользователя) и (функция загрузки карточек с сервера)
+Promise.all([api.getMyProfile(), api.getInitialCards()])
+  .then(([userData, cards]) => {
+    newUserInfo.setUserInfo(userData);
+    myId = userData._id;
+    cardInstance.renderItems(cards);
+  })
+  .catch(err => {
+    console.log(`Ошибка: ${err.status}`);
+  });

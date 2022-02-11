@@ -22,13 +22,12 @@ export default class Card {
   }
 
   _setEventListeners() {
-    this._element.addEventListener('click', () => {
+    const image = this._element.querySelector('.places__image')
+    image.addEventListener('click', () => {
       this._handleCardClick(this._name, this._link);
     });
     this._elementBasket.addEventListener('click', (evt) => {
-      this._handleCardBasketClick(evt, this);
-      evt.stopPropagation(); // запрещает подниматься клику до родителя
-      // this._handleDeleteCard();
+      this._handleCardBasketClick(evt, this._cardId, this._element);
     });
     this._elementFavor.addEventListener('click', (evt) => {
       this._handleFavoriteCard(evt);
@@ -37,25 +36,17 @@ export default class Card {
 
   _handleFavoriteCard(evt) {
     if (this._elementFavor.classList.contains('places__like_active')) {
-      this._elementFavor.classList.remove('places__like_active');
       this._api.dislikeCard(this._cardId)
-        .then((res) => {
-          return res.json();
-        })
         .then((data) => {
           this._elementLikes.textContent = data.likes.length;
+          this._elementFavor.classList.remove('places__like_active');
         })
-      evt.stopPropagation();
     } else {
-        this._elementFavor.classList.add('places__like_active');
-        this._api.likeCard(this._cardId)
-          .then((res) => {
-            return res.json();
-          })
-          .then((data) => {
-            this._elementLikes.textContent = data.likes.length;
-          })
-        evt.stopPropagation();
+      this._api.likeCard(this._cardId)
+        .then((data) => {
+          this._elementLikes.textContent = data.likes.length;
+          this._elementFavor.classList.add('places__like_active');
+        })
     }
   }
 

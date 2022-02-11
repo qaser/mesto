@@ -10,12 +10,7 @@ export default class Api {
     return fetch(`${this._baseUrl}/users/me`, {
       headers: this._headers,
     })
-      .then((res) => {
-        if (res.ok) {
-          return res.json();
-        }
-        return Promise.reject(`Ошибка: ${res.status}`);
-      })
+    .then(this._checkResponse);
   }
 
 
@@ -29,12 +24,7 @@ export default class Api {
         about: user.occupation
       })
     })
-      .then((res) => {
-        if (res.ok) {
-          return res.json();
-        }
-        return Promise.reject(`Ошибка: ${res.status}`);
-      })
+    .then(this._checkResponse);
   }
 
 
@@ -43,12 +33,7 @@ export default class Api {
     return fetch(`${this._baseUrl}/cards`, {
       headers: this._headers,
     })
-      .then((res) => {
-        if (res.ok) {
-          return res.json();
-        }
-        return Promise.reject(`Ошибка: ${res.status}`);
-      })
+    .then(this._checkResponse);
   }
 
 
@@ -61,7 +46,8 @@ export default class Api {
         name: card.name,
         link: card.link
       })
-    });
+    })
+    .then(this._checkResponse);
   }
 
 
@@ -70,7 +56,8 @@ export default class Api {
     return fetch(`${this._baseUrl}/cards/${id}`, {
       method: 'DELETE',
       headers: this._headers,
-    });
+    })
+    .then(this._checkResponse);
   }
 
 
@@ -79,7 +66,8 @@ export default class Api {
     return fetch(`${this._baseUrl}/cards/${id}/likes`, {
       method: 'PUT',
       headers: this._headers,
-    });
+    })
+    .then(this._checkResponse);
   }
 
 
@@ -88,8 +76,10 @@ export default class Api {
     return fetch(`${this._baseUrl}/cards/${id}/likes`, {
       method: 'DELETE',
       headers: this._headers,
-    });
+    })
+    .then(this._checkResponse);
   }
+
 
   // смена аватара
   changeAvatar(link) {
@@ -99,6 +89,15 @@ export default class Api {
       body: JSON.stringify({
         avatar: link,
       })
-    });
+    })
+    .then(this._checkResponse);
+  }
+
+
+  _checkResponse(res) {
+    if (res.ok) {
+        return res.json();
+    }
+    return Promise.reject(`Ошибка ${res.status}`);
   }
 }
